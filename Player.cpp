@@ -17,6 +17,8 @@ Player::Player() {
     maxHealth = 50 + (special["Endurance"] * 10);
     health = maxHealth;
     caps = 0;
+    xp = 0;
+    level = 1;
     hasMission = false;
     equippedArmor = "";
 }

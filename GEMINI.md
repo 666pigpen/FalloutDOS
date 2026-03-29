@@ -21,8 +21,8 @@ A C++17 text-based adventure game set in a post-apocalyptic wasteland, inspired 
 ## Known Issues / Technical Debt
 
 - [x] **Repeatable Interactions:** Some "open" commands (like the crate in the shed) don't track if they've already been triggered, allowing for duplicate rewards.
-- [ ] **Parser Limitations:** The command parser is limited to simple `verb noun` structures and doesn't support complex objects or multiple targets.
-- [ ] **Static World:** World setup is hardcoded in `Game::setupWorld()`.
+- [x] **Parser Limitations:** The command parser is limited to simple `verb noun` structures and doesn't support complex objects or multiple targets.
+- [x] **Static World:** World setup is hardcoded in `Game::setupWorld()`.
 
 ## Roadmap
 
@@ -31,3 +31,6 @@ A C++17 text-based adventure game set in a post-apocalyptic wasteland, inspired 
 - [x] Add Railroad hideout and questline.
 - [x] Implement a system for faction reputation or conflicting choices.
 - [x] Add an armor system with equip/unequip mechanics.
+- [x] Add a Save/Load system using a JSON file.
+- [ ] Implement a Leveling/XP system with Perks.
+- [ ] Implement a Crafting system for combining items.

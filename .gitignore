@@ -1,11 +1,18 @@
 # Build artifacts
 falloutdos
 falloutdos_new
+falloutdos.exe
+falloutdos_custom
 build/
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
+
+# Game data
+savegame.json
+# world.json is sometimes included if it's static data, but I'll add it if they want it private
+# let's keep world.json tracked as it's the game map
 
 # OS generated files
 .DS_Store

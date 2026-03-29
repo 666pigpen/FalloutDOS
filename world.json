@@ -1,0 +1,213 @@
+{
+  "ABANDONED_OUTPOST": {
+    "description": "An abandoned Brotherhood of Steel outpost. Sandbags are piled up around a rusty command tent. The wind howls through the torn canvas. A rugged path leads east toward some jagged rocks. The Red Rocket station is to the west. Inside the tent, a heavy metal hatch leads down.",
+    "enemies": {
+      "raider": {
+        "damage": 5,
+        "description": "A scrawny, chem-addled raider holding a rusty knife.",
+        "health": 25,
+        "xpValue": 30,
+        "loot": {
+          "description": "A poorly maintained knife. Better than using your fists.",
+          "name": "rusty knife"
+        },
+        "name": "raider"
+      }
+    },
+    "exits": {
+      "down": "BOS_BUNKER",
+      "east": "SCAVENGER_DEN",
+      "west": "RED_ROCKET"
+    },
+    "items": {}
+  },
+  "BOS_BUNKER": {
+    "description": "You have climbed down into a dimly lit, fortified Brotherhood of Steel bunker. The hum of generators fills the air. A heavily armored scribe is studying a terminal. The ladder back up is the only exit.",
+    "enemies": {},
+    "exits": {
+      "up": "ABANDONED_OUTPOST"
+    },
+    "items": {}
+  },
+  "CASINO_BAR": {
+    "description": "The casino bar is surprisingly clean. The air is thick with the smell of cheap booze and stale cigarettes. A ghoul bartender with a neatly trimmed mustache is busy polishing a glass. A list of drinks and snacks is scrawled on a chalkboard. The casino floor is back east.",
+    "enemies": {},
+    "exits": {
+      "east": "RIVERBOAT_CASINO"
+    },
+    "items": {}
+  },
+  "CRASHED_VERTIBIRD": {
+    "description": "You follow the trail of debris to the wreckage of an old, rusted Vertibird. The chassis offers little shelter from the wind. The only clear path is back east, but there's an ominous camp up north.",
+    "enemies": {},
+    "exits": {
+      "east": "WASTELAND_1",
+      "north": "ENCLAVE_CAMP"
+    },
+    "items": {
+      "flight recorder": {
+        "description": "A black box containing the Vertibird's pre-crash data. Highly valuable to the Brotherhood.",
+        "name": "flight recorder"
+      },
+      "laser pistol": {
+        "description": "A sleek, energy-based weapon. It looks like it still has some charge.",
+        "name": "laser pistol"
+      }
+    }
+  },
+  "ENCLAVE_CAMP": {
+    "description": "You stumble upon a heavily fortified Enclave camp. High-tech barricades and energy turrets surround the perimeter. An Enclave Officer stands by a tactical map, glaring at you. An Enclave Guard patrols nearby. The crashed vertibird is to the south.",
+    "enemies": {
+      "guard": {
+        "damage": 10,
+        "description": "An Enclave guard clad in advanced Power Armor.",
+        "health": 40,
+        "xpValue": 50,
+        "loot": {
+          "description": "A high-tech Enclave decryption key.",
+          "name": "decryption key"
+        },
+        "name": "guard"
+      }
+    },
+    "exits": {
+      "south": "CRASHED_VERTIBIRD"
+    },
+    "items": {}
+  },
+  "GANGWAY": {
+    "description": "You walk up the creaking wooden gangway toward the riverboat. A tall, scarred ghoul wearing a pre-war security uniform stands guard at the entrance, resting a hand casually on a combat shotgun. He watches you closely but doesn't stop you from entering.",
+    "enemies": {},
+    "exits": {
+      "north": "RIVERBOAT_CASINO",
+      "south": "RIVER_BANK"
+    },
+    "items": {}
+  },
+  "RAILROAD_HIDEOUT": {
+    "description": "You descend into a dimly lit, damp cellar that serves as a covert Railroad hideout. Maps and scattered intelligence reports line the walls. A cautious Railroad Agent watches you closely. The trapdoor leading up to the farm is the only way out.",
+    "enemies": {},
+    "exits": {
+      "up": "SCORCHED_FARM"
+    },
+    "items": {}
+  },
+  "RED_ROCKET": {
+    "description": "The skeletal remains of a Red Rocket gas station stand defiantly against the wind. The pumps are rusted solid. Inside the garage, an old terminal flickers faintly. A locked metal door leads to the back room. The road heads south back to the shed. A faint trail leads east.",
+    "enemies": {},
+    "exits": {
+      "east": "ABANDONED_OUTPOST",
+      "south": "SHED"
+    },
+    "items": {
+      "bobby pin": {
+        "description": "A small piece of bent metal. Perfect for picking locks.",
+        "name": "bobby pin"
+      },
+      "wrench": {
+        "description": "A heavy steel wrench. Useful for repairs or cracking skulls.",
+        "name": "wrench"
+      }
+    }
+  },
+  "RED_ROCKET_BACKROOM": {
+    "description": "You're in the dusty back office of the Red Rocket. Old holotapes and decaying paperwork litter a desk. In the corner sits a sturdy, locked pre-war safe.",
+    "enemies": {},
+    "exits": {
+      "south": "RED_ROCKET"
+    },
+    "items": {}
+  },
+  "RIVERBOAT_CASINO": {
+    "description": "You enter the dilapidated paddlewheel riverboat retrofitted into a casino. Smooth jazz plays over a crackling PA system. Ghouls in worn suits deal cards, and a row of functioning slot machines clink in the corner. To the west is a neon-lit bar. The exit is south.",
+    "enemies": {},
+    "exits": {
+      "south": "GANGWAY",
+      "west": "CASINO_BAR"
+    },
+    "items": {}
+  },
+  "RIVER_BANK": {
+    "description": "You stand on the muddy western bank of a glowing, irradiated river. A dangerously rickety wooden bridge spans the water to the east. To the north, a gangway leads up to a surprisingly well-lit riverboat. The scorched farm is to the west.",
+    "enemies": {},
+    "exits": {
+      "east": "ACROSS_RIVER",
+      "north": "GANGWAY",
+      "west": "SCORCHED_FARM"
+    },
+    "items": {}
+  },
+  "SCAVENGER_DEN": {
+    "description": "A small, hidden cave that has been converted into a makeshift home. Junk and scrap parts are piled everywhere. A grimy, heavily armed scavenger sits on an overturned bucket, tinkering with a broken radio. The exit to the outpost is back west.",
+    "enemies": {},
+    "exits": {
+      "west": "ABANDONED_OUTPOST"
+    },
+    "items": {}
+  },
+  "SCORCHED_FARM": {
+    "description": "You arrive at a collection of ruined farm buildings. The ground is charred and black. A two-headed cow lies dead in a field. A dirt track leads west, and another path leads east toward a river. You notice a hidden trapdoor on the floor leading down.",
+    "enemies": {},
+    "exits": {
+      "down": "RAILROAD_HIDEOUT",
+      "east": "RIVER_BANK",
+      "west": "WASTELAND_1"
+    },
+    "items": {
+      "mutated fruit": {
+        "description": "A strange, glowing fruit. It looks... vaguely edible.",
+        "name": "mutated fruit"
+      }
+    }
+  },
+  "SHED": {
+    "description": "You've reached a small, rusty shed. The door hangs precariously on one hinge. It smells of dust and decay. A large, heavy-looking crate sits in the corner. The wasteland is to the south, and an old road leads further north.",
+    "enemies": {
+      "radroach": {
+        "damage": 3,
+        "description": "A disgusting, oversized roach the size of a dog.",
+        "health": 15,
+        "xpValue": 10,
+        "loot": {
+          "description": "Slightly irradiated roach meat. Yuck.",
+          "name": "roach meat"
+        },
+        "name": "radroach"
+      }
+    },
+    "exits": {
+      "north": "RED_ROCKET",
+      "south": "WASTELAND_1"
+    },
+    "items": {
+      "stimpak": {
+        "description": "A syringe full of a miraculous healing chemical. Using it should restore some health.",
+        "name": "stimpak"
+      }
+    }
+  },
+  "VAULT_ENTRANCE": {
+    "description": "You are standing at the massive, circular entrance of Vault 13. The door is sealed behind you. A harsh, unfamiliar sunlight beats down from above. A path leads north into the wasteland.",
+    "enemies": {},
+    "exits": {
+      "north": "WASTELAND_1"
+    },
+    "items": {}
+  },
+  "WASTELAND_1": {
+    "description": "You are in a barren stretch of wasteland. The ground is cracked and dry. To the south is the Vault entrance. To the north, you see a dilapidated shed. A dirt track leads east, and a trail of debris leads west. A desiccated corpse lies near a rock.",
+    "enemies": {},
+    "exits": {
+      "east": "SCORCHED_FARM",
+      "north": "SHED",
+      "south": "VAULT_ENTRANCE",
+      "west": "CRASHED_VERTIBIRD"
+    },
+    "items": {
+      "office key": {
+        "description": "A tarnished key with an old plastic tag. It might open something nearby.",
+        "name": "office key"
+      }
+    }
+  }
+}

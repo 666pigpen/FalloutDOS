@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "Item.h"
 
 class Player {
@@ -16,6 +17,9 @@ public:
     int health;
     int maxHealth;
     int caps;
+    int xp;
+    int level;
+    std::vector<std::string> perks;
     bool hasMission;
 };
 

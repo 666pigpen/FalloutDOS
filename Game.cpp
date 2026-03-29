@@ -4,6 +4,63 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
+#include <iomanip>
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+void to_json(json& j, const Item& i) {
+    j = json{{"name", i.name}, {"description", i.description}};
+}
+
+void from_json(const json& j, Item& i) {
+    j.at("name").get_to(i.name);
+    j.at("description").get_to(i.description);
+}
+
+void to_json(json& j, const Enemy& e) {
+    j = json{{"name", e.name}, {"description", e.description}, {"health", e.health}, {"damage", e.damage}, {"xpValue", e.xpValue}, {"loot", e.loot}};
+}
+
+void from_json(const json& j, Enemy& e) {
+    j.at("name").get_to(e.name);
+    j.at("description").get_to(e.description);
+    j.at("health").get_to(e.health);
+    j.at("damage").get_to(e.damage);
+    if (j.contains("xpValue")) j.at("xpValue").get_to(e.xpValue);
+    else e.xpValue = 10; // Default XP
+    j.at("loot").get_to(e.loot);
+}
+
+void to_json(json& j, const Room& r) {
+    j = json{{"description", r.description}, {"exits", r.exits}, {"items", r.items}, {"enemies", r.enemies}};
+}
+
+void from_json(const json& j, Room& r) {
+    j.at("description").get_to(r.description);
+    j.at("exits").get_to(r.exits);
+    j.at("items").get_to(r.items);
+    j.at("enemies").get_to(r.enemies);
+}
+
+void to_json(json& j, const Player& p) {
+    j = json{{"currentRoomId", p.currentRoomId}, {"inventory", p.inventory}, {"special", p.special}, {"equippedArmor", p.equippedArmor}, {"health", p.health}, {"maxHealth", p.maxHealth}, {"caps", p.caps}, {"xp", p.xp}, {"level", p.level}, {"perks", p.perks}, {"hasMission", p.hasMission}};
+}
+
+void from_json(const json& j, Player& p) {
+    j.at("currentRoomId").get_to(p.currentRoomId);
+    j.at("inventory").get_to(p.inventory);
+    j.at("special").get_to(p.special);
+    j.at("equippedArmor").get_to(p.equippedArmor);
+    j.at("health").get_to(p.health);
+    j.at("maxHealth").get_to(p.maxHealth);
+    j.at("caps").get_to(p.caps);
+    if (j.contains("xp")) j.at("xp").get_to(p.xp); else p.xp = 0;
+    if (j.contains("level")) j.at("level").get_to(p.level); else p.level = 1;
+    if (j.contains("perks")) j.at("perks").get_to(p.perks); else p.perks = {};
+    j.at("hasMission").get_to(p.hasMission);
+}
 
 Game::Game() : isRunning(true) {
     std::srand(std::time(nullptr));
@@ -26,93 +83,18 @@ void Game::run() {
 }
 
 void Game::setupWorld() {
-    Room vault_entrance("You are standing at the massive, circular entrance of Vault 13. The door is sealed behind you. A harsh, unfamiliar sunlight beats down from above. A path leads north into the wasteland.");
-    vault_entrance.exits["north"] = "WASTELAND_1";
-    world["VAULT_ENTRANCE"] = vault_entrance;
-
-    Room wasteland_1("You are in a barren stretch of wasteland. The ground is cracked and dry. To the south is the Vault entrance. To the north, you see a dilapidated shed. A dirt track leads east, and a trail of debris leads west. A desiccated corpse lies near a rock.");
-    wasteland_1.exits["south"] = "VAULT_ENTRANCE";
-    wasteland_1.exits["north"] = "SHED";
-    wasteland_1.exits["east"] = "SCORCHED_FARM";
-    wasteland_1.exits["west"] = "CRASHED_VERTIBIRD";
-    wasteland_1.items["office key"] = Item("office key", "A tarnished key with an old plastic tag. It might open something nearby.");
-    world["WASTELAND_1"] = wasteland_1;
-
-    Room crashed_vertibird("You follow the trail of debris to the wreckage of an old, rusted Vertibird. The chassis offers little shelter from the wind. The only clear path is back east, but there's an ominous camp up north.");
-    crashed_vertibird.exits["east"] = "WASTELAND_1";
-    crashed_vertibird.exits["north"] = "ENCLAVE_CAMP";
-    crashed_vertibird.items["laser pistol"] = Item("laser pistol", "A sleek, energy-based weapon. It looks like it still has some charge.");
-    crashed_vertibird.items["flight recorder"] = Item("flight recorder", "A black box containing the Vertibird's pre-crash data. Highly valuable to the Brotherhood.");
-    world["CRASHED_VERTIBIRD"] = crashed_vertibird;
-
-    Room red_rocket("The skeletal remains of a Red Rocket gas station stand defiantly against the wind. The pumps are rusted solid. Inside the garage, an old terminal flickers faintly. A locked metal door leads to the back room. The road heads south back to the shed. A faint trail leads east.");
-    red_rocket.exits["south"] = "SHED";
-    red_rocket.exits["east"] = "ABANDONED_OUTPOST";
-    red_rocket.items["wrench"] = Item("wrench", "A heavy steel wrench. Useful for repairs or cracking skulls.");
-    red_rocket.items["bobby pin"] = Item("bobby pin", "A small piece of bent metal. Perfect for picking locks.");
-    world["RED_ROCKET"] = red_rocket;
-
-    Room red_rocket_backroom("You're in the dusty back office of the Red Rocket. Old holotapes and decaying paperwork litter a desk. In the corner sits a sturdy, locked pre-war safe.");
-    red_rocket_backroom.exits["south"] = "RED_ROCKET";
-    world["RED_ROCKET_BACKROOM"] = red_rocket_backroom;
-
-    Room shed("You've reached a small, rusty shed. The door hangs precariously on one hinge. It smells of dust and decay. A large, heavy-looking crate sits in the corner. The wasteland is to the south, and an old road leads further north.");
-    shed.exits["south"] = "WASTELAND_1";
-    shed.exits["north"] = "RED_ROCKET";
-    shed.items["stimpak"] = Item("stimpak", "A syringe full of a miraculous healing chemical. Using it should restore some health.");
-    shed.enemies["radroach"] = Enemy("radroach", "A disgusting, oversized roach the size of a dog.", 15, 3, Item("roach meat", "Slightly irradiated roach meat. Yuck."));
-    world["SHED"] = shed;
-
-    Room scorched_farm("You arrive at a collection of ruined farm buildings. The ground is charred and black. A two-headed cow lies dead in a field. A dirt track leads west, and another path leads east toward a river. You notice a hidden trapdoor on the floor leading down.");
-    scorched_farm.exits["west"] = "WASTELAND_1";
-    scorched_farm.exits["east"] = "RIVER_BANK";
-    scorched_farm.exits["down"] = "RAILROAD_HIDEOUT";
-    scorched_farm.items["mutated fruit"] = Item("mutated fruit", "A strange, glowing fruit. It looks... vaguely edible.");
-    world["SCORCHED_FARM"] = scorched_farm;
-
-    Room river_bank("You stand on the muddy western bank of a glowing, irradiated river. A dangerously rickety wooden bridge spans the water to the east. To the north, a gangway leads up to a surprisingly well-lit riverboat. The scorched farm is to the west.");
-    river_bank.exits["west"] = "SCORCHED_FARM";
-    river_bank.exits["north"] = "GANGWAY";
-    river_bank.exits["east"] = "ACROSS_RIVER";
-    world["RIVER_BANK"] = river_bank;
-
-    Room gangway("You walk up the creaking wooden gangway toward the riverboat. A tall, scarred ghoul wearing a pre-war security uniform stands guard at the entrance, resting a hand casually on a combat shotgun. He watches you closely but doesn't stop you from entering.");
-    gangway.exits["south"] = "RIVER_BANK";
-    gangway.exits["north"] = "RIVERBOAT_CASINO";
-    world["GANGWAY"] = gangway;
-
-    Room casino("You enter the dilapidated paddlewheel riverboat retrofitted into a casino. Smooth jazz plays over a crackling PA system. Ghouls in worn suits deal cards, and a row of functioning slot machines clink in the corner. To the west is a neon-lit bar. The exit is south.");
-    casino.exits["south"] = "GANGWAY";
-    casino.exits["west"] = "CASINO_BAR";
-    world["RIVERBOAT_CASINO"] = casino;
-
-    Room bar("The casino bar is surprisingly clean. The air is thick with the smell of cheap booze and stale cigarettes. A ghoul bartender with a neatly trimmed mustache is busy polishing a glass. A list of drinks and snacks is scrawled on a chalkboard. The casino floor is back east.");
-    bar.exits["east"] = "RIVERBOAT_CASINO";
-    world["CASINO_BAR"] = bar;
-
-    Room outpost("An abandoned Brotherhood of Steel outpost. Sandbags are piled up around a rusty command tent. The wind howls through the torn canvas. A rugged path leads east toward some jagged rocks. The Red Rocket station is to the west. Inside the tent, a heavy metal hatch leads down.");
-    outpost.exits["west"] = "RED_ROCKET";
-    outpost.exits["east"] = "SCAVENGER_DEN";
-    outpost.exits["down"] = "BOS_BUNKER";
-    outpost.enemies["raider"] = Enemy("raider", "A scrawny, chem-addled raider holding a rusty knife.", 25, 5, Item("rusty knife", "A poorly maintained knife. Better than using your fists."));
-    world["ABANDONED_OUTPOST"] = outpost;
-
-    Room scavenger_den("A small, hidden cave that has been converted into a makeshift home. Junk and scrap parts are piled everywhere. A grimy, heavily armed scavenger sits on an overturned bucket, tinkering with a broken radio. The exit to the outpost is back west.");
-    scavenger_den.exits["west"] = "ABANDONED_OUTPOST";
-    world["SCAVENGER_DEN"] = scavenger_den;
-
-    Room bos_bunker("You have climbed down into a dimly lit, fortified Brotherhood of Steel bunker. The hum of generators fills the air. A heavily armored scribe is studying a terminal. The ladder back up is the only exit.");
-    bos_bunker.exits["up"] = "ABANDONED_OUTPOST";
-    world["BOS_BUNKER"] = bos_bunker;
-
-    Room enclave_camp("You stumble upon a heavily fortified Enclave camp. High-tech barricades and energy turrets surround the perimeter. An Enclave Officer stands by a tactical map, glaring at you. An Enclave Guard patrols nearby. The crashed vertibird is to the south.");
-    enclave_camp.exits["south"] = "CRASHED_VERTIBIRD";
-    enclave_camp.enemies["guard"] = Enemy("guard", "An Enclave guard clad in advanced Power Armor.", 40, 10, Item("decryption key", "A high-tech Enclave decryption key."));
-    world["ENCLAVE_CAMP"] = enclave_camp;
-
-    Room railroad_hideout("You descend into a dimly lit, damp cellar that serves as a covert Railroad hideout. Maps and scattered intelligence reports line the walls. A cautious Railroad Agent watches you closely. The trapdoor leading up to the farm is the only way out.");
-    railroad_hideout.exits["up"] = "SCORCHED_FARM";
-    world["RAILROAD_HIDEOUT"] = railroad_hideout;
+    std::ifstream i("world.json");
+    if (i.is_open()) {
+        json j;
+        try {
+            i >> j;
+            j.get_to(world);
+        } catch (const json::exception& e) {
+            std::cout << "Error parsing world.json: " << e.what() << std::endl;
+        }
+    } else {
+        std::cout << "Could not open world.json!" << std::endl;
+    }
 }
 
 void Game::render() {
@@ -152,6 +134,10 @@ void Game::processInput() {
 
     if (command.verb == "quit") {
         isRunning = false;
+    } else if (command.verb == "save") {
+        saveGame("savegame.json");
+    } else if (command.verb == "load") {
+        loadGame("savegame.json");
     } else if (command.verb == "go") {
         Room& currentRoom = world[player.currentRoomId];
         if (player.currentRoomId == "RIVER_BANK" && command.noun == "east" && !flags["bridgeCollapsed"]) {
@@ -269,12 +255,20 @@ void Game::processInput() {
     } else if (command.verb == "use") {
         if (player.inventory.count(command.noun)) {
             if (command.noun == "stimpak") {
-                player.health += 25;
+                int healing = 25;
+                for (const auto& perk : player.perks) if (perk == "Medic") healing = 37;
+                player.health += healing;
                 if (player.health > player.maxHealth) {
                     player.health = player.maxHealth;
                 }
                 player.inventory.erase(command.noun);
                 std::cout << "You inject the stimpak. You feel a surge of energy as some of your wounds close." << std::endl;
+                std::cout << "Health: " << player.health << "/" << player.maxHealth << std::endl;
+            } else if (command.noun == "wasteland stew") {
+                player.health += 35;
+                if (player.health > player.maxHealth) player.health = player.maxHealth;
+                player.inventory.erase(command.noun);
+                std::cout << "You eat the warm wasteland stew. It's surprisingly good, and very filling." << std::endl;
                 std::cout << "Health: " << player.health << "/" << player.maxHealth << std::endl;
             } else if (command.noun == "nuka-cola") {
                 player.health += 5;
@@ -298,17 +292,42 @@ void Game::processInput() {
             Enemy& enemy = currentRoom.enemies[command.noun];
             
             int playerDamage = player.special["Strength"];
-            if (player.inventory.count("plasma rifle")) playerDamage += 20;
-            else if (player.inventory.count("laser pistol")) playerDamage += 10;
-            else if (player.inventory.count("rusty knife")) playerDamage += 5;
-            else if (player.inventory.count("pipe")) playerDamage += 5;
-            else if (player.inventory.count("wrench")) playerDamage += 5;
+            for (const auto& perk : player.perks) if (perk == "Bloody Mess") playerDamage += 5;
             
-            std::cout << "You attack the " << enemy.name << " for " << playerDamage << " damage!" << std::endl;
+            std::string weaponUsed = "fists";
+            
+            if (!command.indirect_noun.empty() && command.preposition == "with") {
+                if (player.inventory.count(command.indirect_noun)) {
+                    if (command.indirect_noun == "plasma rifle") { playerDamage += 20; weaponUsed = command.indirect_noun; }
+                    else if (command.indirect_noun == "laser pistol") { playerDamage += 10; weaponUsed = command.indirect_noun; }
+                    else if (command.indirect_noun == "spiked pipe") { playerDamage += 15; weaponUsed = command.indirect_noun; }
+                    else if (command.indirect_noun == "rusty knife") { playerDamage += 5; weaponUsed = command.indirect_noun; }
+                    else if (command.indirect_noun == "pipe") { playerDamage += 5; weaponUsed = command.indirect_noun; }
+                    else if (command.indirect_noun == "wrench") { playerDamage += 5; weaponUsed = command.indirect_noun; }
+                    else {
+                        std::cout << "You can't use the '" << command.indirect_noun << "' as a weapon." << std::endl;
+                        return;
+                    }
+                } else {
+                    std::cout << "You don't have a '" << command.indirect_noun << "'." << std::endl;
+                    return;
+                }
+            } else {
+                // Auto-equip best weapon if not specified
+                if (player.inventory.count("plasma rifle")) { playerDamage += 20; weaponUsed = "plasma rifle"; }
+                else if (player.inventory.count("laser pistol")) { playerDamage += 10; weaponUsed = "laser pistol"; }
+                else if (player.inventory.count("spiked pipe")) { playerDamage += 15; weaponUsed = "spiked pipe"; }
+                else if (player.inventory.count("rusty knife")) { playerDamage += 5; weaponUsed = "rusty knife"; }
+                else if (player.inventory.count("pipe")) { playerDamage += 5; weaponUsed = "pipe"; }
+                else if (player.inventory.count("wrench")) { playerDamage += 5; weaponUsed = "wrench"; }
+            }
+            
+            std::cout << "You attack the " << enemy.name << " with your " << weaponUsed << " for " << playerDamage << " damage!" << std::endl;
             enemy.health -= playerDamage;
             
             if (enemy.health <= 0) {
                 std::cout << "You defeated the " << enemy.name << "!" << std::endl;
+                gainXP(enemy.xpValue);
                 if (!enemy.loot.name.empty() && enemy.loot.name != "Unnamed Item") {
                     std::cout << "It dropped: " << enemy.loot.name << "." << std::endl;
                     currentRoom.items[enemy.loot.name] = enemy.loot;
@@ -342,6 +361,7 @@ void Game::processInput() {
                 player.inventory.erase("laser pistol");
                 player.caps += 100;
                 player.hasMission = false; // Mission complete
+                gainXP(50);
             } else {
                 std::cout << "\"Any luck finding that laser pistol at the crash site to the west?\" the bartender asks." << std::endl;
             }
@@ -356,6 +376,7 @@ void Game::processInput() {
                 player.inventory.erase("fusion core");
                 player.inventory["plasma rifle"] = Item("plasma rifle", "An advanced energy weapon firing superheated plasma. Extremely lethal.");
                 flags["scavengerMissionComplete"] = true;
+                gainXP(50);
             } else {
                 std::cout << "\"You find that fusion core yet? Check the safe in the Red Rocket gas station!\"" << std::endl;
             }
@@ -371,6 +392,7 @@ void Game::processInput() {
                 player.inventory["power armor helmet"] = Item("power armor helmet", "A sturdy T-60 Power Armor helmet. Offers great protection.");
                 flags["flightRecorderDelivered"] = true;
                 flags["bosReputation"] = true;
+                gainXP(75);
             } else {
                 std::cout << "\"Any luck finding the crashed Vertibird to the west? We need that flight recorder.\"" << std::endl;
             }
@@ -386,6 +408,7 @@ void Game::processInput() {
                 player.inventory["plasma grenade"] = Item("plasma grenade", "A highly destructive energy explosive.");
                 flags["flightRecorderDelivered"] = true;
                 flags["enclaveReputation"] = true;
+                gainXP(75);
             } else {
                 std::cout << "\"I am losing my patience. Find the crashed Vertibird and bring me the flight recorder.\"" << std::endl;
             }
@@ -401,6 +424,7 @@ void Game::processInput() {
                 player.inventory["stealth boy"] = Item("stealth boy", "A personal cloaking device. Renders the user temporarily invisible.");
                 flags["railroadMissionComplete"] = true;
                 flags["railroadReputation"] = true;
+                gainXP(100);
             } else {
                 std::cout << "\"Please hurry. The Enclave guard at their camp has the decryption key we need.\"" << std::endl;
             }
@@ -431,36 +455,49 @@ void Game::processInput() {
         } else {
             std::cout << "There's no one here to buy anything from." << std::endl;
         }
+    } else if (command.verb == "craft") {
+        craft(command.noun);
     } else if (command.verb == "open") {
         if (command.noun == "crate" && player.currentRoomId == "SHED") {
             if (flags["crateOpened"]) {
                 std::cout << "The crate is already open and empty." << std::endl;
             } else if (player.special["Strength"] > 7) {
-                std::cout << "With a mighty heave, you wrench the crate open! Inside, you find a rusty pipe and a small pouch containing 25 bottle caps." << std::endl;
+                int reward = 25;
+                for (const auto& perk : player.perks) if (perk == "Fortune Finder") reward = 50;
+                std::cout << "With a mighty heave, you wrench the crate open! Inside, you find a rusty pipe and a small pouch containing " << reward << " bottle caps." << std::endl;
                 world[player.currentRoomId].items["pipe"] = Item("pipe", "A short, rusty metal pipe. It's heavy and could probably be used for bashing things.");
-                player.caps += 25;
+                player.caps += reward;
                 flags["crateOpened"] = true;
+                gainXP(20);
             } else {
                 std::cout << "You strain to open the crate, but the lid won't budge. You're not strong enough." << std::endl;
             }
         } else if (command.noun == "door" && player.currentRoomId == "RED_ROCKET") {
-            if (player.inventory.count("office key")) {
+            if (!command.indirect_noun.empty() && command.indirect_noun != "office key") {
+                std::cout << "You can't open the door with that." << std::endl;
+            } else if (player.inventory.count("office key")) {
                 std::cout << "You insert the tarnished key into the lock. It turns with a satisfying click. The door to the backroom is now open!" << std::endl;
                 world["RED_ROCKET"].exits["north"] = "RED_ROCKET_BACKROOM";
                 world["RED_ROCKET"].description = "The skeletal remains of a Red Rocket gas station stand defiantly against the wind. The pumps are rusted solid. Inside the garage, an old terminal flickers faintly. An open door leads to the back room. The road heads south back to the shed. A faint trail leads east.";
+                gainXP(30);
             } else {
                 std::cout << "The metal door is locked tight. You need a key to open it." << std::endl;
             }
         } else if (command.noun == "safe" && player.currentRoomId == "RED_ROCKET_BACKROOM") {
             if (world[player.currentRoomId].description.find("open pre-war safe") != std::string::npos) {
                 std::cout << "The safe is already open." << std::endl;
+            } else if (!command.indirect_noun.empty() && command.indirect_noun != "bobby pin") {
+                std::cout << "You can't pick the safe with that." << std::endl;
             } else if (player.inventory.count("bobby pin")) {
-                std::cout << "Using the bobby pin and a bit of finesse, you hear a satisfying *click*. The safe pops open! Inside you find a fusion core and 50 bottle caps." << std::endl;
+                int reward = 50;
+                for (const auto& perk : player.perks) if (perk == "Fortune Finder") reward = 100;
+                std::cout << "Using the bobby pin and a bit of finesse, you hear a satisfying *click*. The safe pops open! Inside you find a fusion core and " << reward << " bottle caps." << std::endl;
                 world[player.currentRoomId].items["fusion core"] = Item("fusion core", "A small, humming cylinder of nuclear energy. Highly valuable.");
-                player.caps += 50;
+                player.caps += reward;
                 world[player.currentRoomId].description = "You're in the dusty back office of the Red Rocket. Old holotapes and decaying paperwork litter a desk. In the corner sits an open pre-war safe.";
                 player.inventory.erase("bobby pin");
                 std::cout << "The bobby pin breaks in the process, but it was worth it." << std::endl;
+                gainXP(50);
             } else {
                 std::cout << "The safe is locked tight. You'll need something to pick the lock, like a bobby pin." << std::endl;
             }
@@ -475,17 +512,23 @@ void Game::processInput() {
                 player.caps -= 5;
                 std::cout << "You feed 5 caps into the rusty slot machine and pull the lever..." << std::endl;
                 int roll = std::rand() % 100;
+                int multiplier = 1;
+                for (const auto& perk : player.perks) if (perk == "Fortune Finder") multiplier = 2;
+
                 if (roll < 50) {
                     std::cout << "The reels spin and land on... nothing matching. You lost your caps." << std::endl;
                 } else if (roll < 80) {
-                    std::cout << "The reels spin and land on two cherries! You win 10 caps." << std::endl;
-                    player.caps += 10;
+                    int win = 10 * multiplier;
+                    std::cout << "The reels spin and land on two cherries! You win " << win << " caps." << std::endl;
+                    player.caps += win;
                 } else if (roll < 95) {
-                    std::cout << "The reels spin and land on three bells! You win 25 caps!" << std::endl;
-                    player.caps += 25;
+                    int win = 25 * multiplier;
+                    std::cout << "The reels spin and land on three bells! You win " << win << " caps!" << std::endl;
+                    player.caps += win;
                 } else {
-                    std::cout << "JACKPOT! Three Vault Boys line up! A cascade of 100 caps pours into the tray!" << std::endl;
-                    player.caps += 100;
+                    int win = 100 * multiplier;
+                    std::cout << "JACKPOT! Three Vault Boys line up! A cascade of " << win << " caps pours into the tray!" << std::endl;
+                    player.caps += win;
                 }
                 std::cout << "Caps: " << player.caps << std::endl;
             }
@@ -507,15 +550,156 @@ Command Game::parseCommand(const std::string& input) {
 
     std::stringstream ss(lower_input);
     std::string word;
-    ss >> command.verb;
+    if (!(ss >> command.verb)) return command;
     
-    // Handle multi-word nouns, e.g. "open heavy crate"
-    if (ss >> word) {
-        command.noun = word;
-        while(ss >> word) {
-            command.noun += " " + word;
+    std::vector<std::string> prepositions = {"in", "on", "with", "from", "to", "at", "under"};
+    std::vector<std::string> articles = {"the", "a", "an"};
+    
+    bool found_prep = false;
+    while(ss >> word) {
+        if (std::find(articles.begin(), articles.end(), word) != articles.end()) {
+            continue; // Skip articles
         }
+        
+        if (!found_prep && std::find(prepositions.begin(), prepositions.end(), word) != prepositions.end()) {
+            command.preposition = word;
+            found_prep = true;
+        } else if (!found_prep) {
+            if (!command.noun.empty()) command.noun += " ";
+            command.noun += word;
+        } else {
+            if (!command.indirect_noun.empty()) command.indirect_noun += " ";
+            command.indirect_noun += word;
+        }
+    }
+    
+    // Handle cases where the verb implicitly takes a preposition (e.g., "talk to ghoul")
+    // If we only found a preposition and an indirect noun, shift them for easier processing
+    if (command.noun.empty() && !command.preposition.empty() && !command.indirect_noun.empty()) {
+        command.noun = command.indirect_noun;
+        command.indirect_noun = "";
     }
 
     return command;
+}
+
+void Game::saveGame(const std::string& filename) {
+    json j;
+    j["player"] = player;
+    j["world"] = world;
+    j["flags"] = flags;
+
+    std::ofstream o(filename);
+    if (o.is_open()) {
+        o << std::setw(4) << j << std::endl;
+        std::cout << "Game saved successfully to " << filename << "." << std::endl;
+    } else {
+        std::cout << "Failed to open " << filename << " for saving." << std::endl;
+    }
+}
+
+void Game::loadGame(const std::string& filename) {
+    std::ifstream i(filename);
+    if (!i.is_open()) {
+        std::cout << "Could not open save file " << filename << "." << std::endl;
+        return;
+    }
+    json j;
+    try {
+        i >> j;
+        j.at("player").get_to(player);
+        j.at("world").get_to(world);
+        j.at("flags").get_to(flags);
+        std::cout << "Game loaded successfully from " << filename << "." << std::endl;
+    } catch (const json::exception& e) {
+        std::cout << "Failed to load game: " << e.what() << std::endl;
+    }
+}
+
+void Game::gainXP(int amount) {
+    player.xp += amount;
+    std::cout << "You gained " << amount << " XP! (Total: " << player.xp << "/" << player.level * 100 << ")" << std::endl;
+    
+    if (player.xp >= player.level * 100) {
+        levelUp();
+    }
+}
+
+void Game::levelUp() {
+    player.level++;
+    player.xp = 0; // Reset XP for next level or keep overflow? Let's reset for simplicity.
+    player.maxHealth += 10;
+    
+    // Toughness Perk check
+    for (const auto& perk : player.perks) {
+        if (perk == "Toughness") player.maxHealth += 10; // Extra health if they already have it? No, wait.
+    }
+    
+    player.health = player.maxHealth;
+    
+    std::cout << std::endl;
+    std::cout << "*******************************" << std::endl;
+    std::cout << "LEVEL UP! You are now level " << player.level << "!" << std::endl;
+    std::cout << "Your health has been restored and increased." << std::endl;
+    std::cout << "Choose a Perk:" << std::endl;
+    std::cout << "1. Toughness (+20 Max Health)" << std::endl;
+    std::cout << "2. Bloody Mess (+5 Base Damage)" << std::endl;
+    std::cout << "3. Medic (Stimpaks heal 50% more)" << std::endl;
+    std::cout << "4. Fortune Finder (50% more caps from gambling/crates)" << std::endl;
+    std::cout << "Enter the number of your choice: ";
+    
+    int choice;
+    std::string line;
+    std::getline(std::cin, line);
+    try {
+        choice = std::stoi(line);
+    } catch (...) {
+        choice = 1; // Default to Toughness if invalid input
+    }
+    
+    if (choice == 1) {
+        player.perks.push_back("Toughness");
+        player.maxHealth += 20;
+        player.health = player.maxHealth;
+        std::cout << "You chose: Toughness. Max Health is now " << player.maxHealth << "." << std::endl;
+    } else if (choice == 2) {
+        player.perks.push_back("Bloody Mess");
+        std::cout << "You chose: Bloody Mess. Your attacks will do more damage." << std::endl;
+    } else if (choice == 3) {
+        player.perks.push_back("Medic");
+        std::cout << "You chose: Medic. Stimpaks are now more effective." << std::endl;
+    } else if (choice == 4) {
+        player.perks.push_back("Fortune Finder");
+        std::cout << "You chose: Fortune Finder. You'll find more caps now." << std::endl;
+    } else {
+        player.perks.push_back("Toughness");
+        player.maxHealth += 20;
+        player.health = player.maxHealth;
+        std::cout << "Invalid choice. Defaulting to Toughness. Max Health is now " << player.maxHealth << "." << std::endl;
+    }
+    std::cout << "*******************************" << std::endl << std::endl;
+}
+
+void Game::craft(const std::string& itemName) {
+    if (itemName == "wasteland stew") {
+        if (player.inventory.count("mutated fruit") && player.inventory.count("roach meat")) {
+            player.inventory.erase("mutated fruit");
+            player.inventory.erase("roach meat");
+            player.inventory["wasteland stew"] = Item("wasteland stew", "A hearty, if slightly glowing, stew made from wasteland ingredients. Restores 35 health.");
+            std::cout << "You carefully prepare a bowl of wasteland stew. It smells... interesting." << std::endl;
+        } else {
+            std::cout << "You need a 'mutated fruit' and 'roach meat' to craft 'wasteland stew'." << std::endl;
+        }
+    } else if (itemName == "spiked pipe") {
+        if (player.inventory.count("pipe") && player.inventory.count("wrench")) {
+            player.inventory.erase("pipe");
+            player.inventory.erase("wrench");
+            player.inventory["spiked pipe"] = Item("spiked pipe", "A heavy metal pipe with wicked-looking metal spikes welded onto it. Does significant damage.");
+            std::cout << "You use the wrench to hammer some sharp metal bits into the pipe. The resulting weapon looks formidable." << std::endl;
+        } else {
+            std::cout << "You need a 'pipe' and 'wrench' to craft a 'spiked pipe'." << std::endl;
+        }
+    } else {
+        std::cout << "You don't know how to craft '" << itemName << "'. Available recipes: 'wasteland stew', 'spiked pipe'." << std::endl;
+    }
 }

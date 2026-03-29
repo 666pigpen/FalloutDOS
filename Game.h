@@ -18,6 +18,13 @@ private:
     void render();
     Command parseCommand(const std::string& input);
 
+    void saveGame(const std::string& filename);
+    void loadGame(const std::string& filename);
+
+    void gainXP(int amount);
+    void levelUp();
+    void craft(const std::string& itemName);
+
     bool isRunning;
     Player player;
     std::map<std::string, Room> world;
