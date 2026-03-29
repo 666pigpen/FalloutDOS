@@ -1,4 +1,21 @@
 {
+  "ABANDONED_MANSION": {
+    "description": "An abandoned mansion that looks like it could have been featured on a pre-war show about hoarders. Bent tin cans cover every square inch of the floor and tower to the ceilings. A haggard old woman named Rosie is confined to a rattletrap, cobbled-together wheelchair. She is well past her prime, but it's obvious she was remarkably beautiful many, many, many years ago. She is busy organizing a stack of cans. The only exit is east back to the crash site.",
+    "enemies": {},
+    "exits": {
+      "east": "CRASHED_VERTIBIRD"
+    },
+    "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can. Most people would call it junk.",
+        "name": "bent tin can"
+      },
+      "stuffed cat": {
+        "description": "A dusty, one-eyed stuffed cat. It's surprisingly soft despite the grime.",
+        "name": "stuffed cat"
+      }
+    }
+  },
   "ABANDONED_OUTPOST": {
     "description": "An abandoned Brotherhood of Steel outpost. Sandbags are piled up around a rusty command tent. The wind howls through the torn canvas. A rugged path leads east toward some jagged rocks. The Red Rocket station is to the west. Inside the tent, a heavy metal hatch leads down.",
     "enemies": {
@@ -6,12 +23,12 @@
         "damage": 5,
         "description": "A scrawny, chem-addled raider holding a rusty knife.",
         "health": 25,
-        "xpValue": 30,
         "loot": {
           "description": "A poorly maintained knife. Better than using your fists.",
           "name": "rusty knife"
         },
-        "name": "raider"
+        "name": "raider",
+        "xpValue": 30
       }
     },
     "exits": {
@@ -19,7 +36,16 @@
       "east": "SCAVENGER_DEN",
       "west": "RED_ROCKET"
     },
-    "items": {}
+    "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      },
+      "scab": {
+        "description": "A large, crusty, and vaguely biological-looking flake. Gross.",
+        "name": "scab"
+      }
+    }
   },
   "BOS_BUNKER": {
     "description": "You have climbed down into a dimly lit, fortified Brotherhood of Steel bunker. The hum of generators fills the air. A heavily armored scribe is studying a terminal. The ladder back up is the only exit.",
@@ -27,7 +53,12 @@
     "exits": {
       "up": "ABANDONED_OUTPOST"
     },
-    "items": {}
+    "items": {
+      "pretty bent tin can": {
+        "description": "A standard bent tin can that has rusted a pretty purple color.",
+        "name": "pretty bent tin can"
+      }
+    }
   },
   "CASINO_BAR": {
     "description": "The casino bar is surprisingly clean. The air is thick with the smell of cheap booze and stale cigarettes. A ghoul bartender with a neatly trimmed mustache is busy polishing a glass. A list of drinks and snacks is scrawled on a chalkboard. The casino floor is back east.",
@@ -35,14 +66,20 @@
     "exits": {
       "east": "RIVERBOAT_CASINO"
     },
-    "items": {}
+    "items": {
+      "pretty bent tin can": {
+        "description": "A standard bent tin can that has rusted a pretty purple color.",
+        "name": "pretty bent tin can"
+      }
+    }
   },
   "CRASHED_VERTIBIRD": {
-    "description": "You follow the trail of debris to the wreckage of an old, rusted Vertibird. The chassis offers little shelter from the wind. The only clear path is back east, but there's an ominous camp up north.",
+    "description": "You follow the trail of debris to the wreckage of an old, rusted Vertibird. The chassis offers little shelter from the wind. A trail leads west toward a massive, crumbling mansion. The only other clear path is back east, but there's an ominous camp up north.",
     "enemies": {},
     "exits": {
       "east": "WASTELAND_1",
-      "north": "ENCLAVE_CAMP"
+      "north": "ENCLAVE_CAMP",
+      "west": "ABANDONED_MANSION"
     },
     "items": {
       "flight recorder": {
@@ -62,18 +99,23 @@
         "damage": 10,
         "description": "An Enclave guard clad in advanced Power Armor.",
         "health": 40,
-        "xpValue": 50,
         "loot": {
           "description": "A high-tech Enclave decryption key.",
           "name": "decryption key"
         },
-        "name": "guard"
+        "name": "guard",
+        "xpValue": 50
       }
     },
     "exits": {
       "south": "CRASHED_VERTIBIRD"
     },
-    "items": {}
+    "items": {
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
+      }
+    }
   },
   "GANGWAY": {
     "description": "You walk up the creaking wooden gangway toward the riverboat. A tall, scarred ghoul wearing a pre-war security uniform stands guard at the entrance, resting a hand casually on a combat shotgun. He watches you closely but doesn't stop you from entering.",
@@ -84,13 +126,34 @@
     },
     "items": {}
   },
+  "LILLYPAD_ISLAND": {
+    "description": "A small island sitting in the middle of the irradiated river, remarkably lush compared to the rest of the wasteland. Beautiful, vibrant paintings are propped up against trees and rocks, and countless stuffed animals are arranged in whimsical scenes. Lillypad, a young ghoul whose features remain hauntingly beautiful despite her condition, draped in wet weeds and wearing a crown of glowing lilies, sits on a mossy rock. Her voice is hauntingly beautiful. The river flows all around you.",
+    "enemies": {},
+    "exits": {
+      "swim": "RIVER_BANK"
+    },
+    "items": {}
+  },
   "RAILROAD_HIDEOUT": {
     "description": "You descend into a dimly lit, damp cellar that serves as a covert Railroad hideout. Maps and scattered intelligence reports line the walls. A cautious Railroad Agent watches you closely. The trapdoor leading up to the farm is the only way out.",
     "enemies": {},
     "exits": {
       "up": "SCORCHED_FARM"
     },
-    "items": {}
+    "items": {
+      "pretty bent tin can": {
+        "description": "A standard bent tin can that has rusted a pretty purple color.",
+        "name": "pretty bent tin can"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
+      },
+      "stuffed dog": {
+        "description": "A small stuffed dog with floppy ears. It's missing a tail.",
+        "name": "stuffed dog"
+      }
+    }
   },
   "RED_ROCKET": {
     "description": "The skeletal remains of a Red Rocket gas station stand defiantly against the wind. The pumps are rusted solid. Inside the garage, an old terminal flickers faintly. A locked metal door leads to the back room. The road heads south back to the shed. A faint trail leads east.",
@@ -100,6 +163,10 @@
       "south": "SHED"
     },
     "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      },
       "bobby pin": {
         "description": "A small piece of bent metal. Perfect for picking locks.",
         "name": "bobby pin"
@@ -107,6 +174,10 @@
       "wrench": {
         "description": "A heavy steel wrench. Useful for repairs or cracking skulls.",
         "name": "wrench"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
       }
     }
   },
@@ -116,7 +187,20 @@
     "exits": {
       "south": "RED_ROCKET"
     },
-    "items": {}
+    "items": {
+      "pretty bent tin can": {
+        "description": "A standard bent tin can that has rusted a pretty purple color.",
+        "name": "pretty bent tin can"
+      },
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
+      }
+    }
   },
   "RIVERBOAT_CASINO": {
     "description": "You enter the dilapidated paddlewheel riverboat retrofitted into a casino. Smooth jazz plays over a crackling PA system. Ghouls in worn suits deal cards, and a row of functioning slot machines clink in the corner. To the west is a neon-lit bar. The exit is south.",
@@ -128,14 +212,33 @@
     "items": {}
   },
   "RIVER_BANK": {
-    "description": "You stand on the muddy western bank of a glowing, irradiated river. A dangerously rickety wooden bridge spans the water to the east. To the north, a gangway leads up to a surprisingly well-lit riverboat. The scorched farm is to the west.",
-    "enemies": {},
+    "description": "You stand on the muddy western bank of a glowing, irradiated river. A dangerously rickety wooden bridge spans the water to the east. To the north, a gangway leads up to a surprisingly well-lit riverboat. The scorched farm is to the west. A muddy path leads down under the bridge. Across the water, you hear a beautiful voice calling from a small island.",
+    "enemies": {
+      "ghoul": {
+        "damage": 4,
+        "description": "A feral ghoul, its skin sloughing off in wet clumps.",
+        "health": 20,
+        "loot": {
+          "description": "A large, crusty flake of ghoul skin.",
+          "name": "scab"
+        },
+        "name": "feral ghoul",
+        "xpValue": 20
+      }
+    },
     "exits": {
+      "down": "UNDER_BRIDGE",
       "east": "ACROSS_RIVER",
       "north": "GANGWAY",
+      "swim": "LILLYPAD_ISLAND",
       "west": "SCORCHED_FARM"
     },
-    "items": {}
+    "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      }
+    }
   },
   "SCAVENGER_DEN": {
     "description": "A small, hidden cave that has been converted into a makeshift home. Junk and scrap parts are piled everywhere. A grimy, heavily armed scavenger sits on an overturned bucket, tinkering with a broken radio. The exit to the outpost is back west.",
@@ -143,20 +246,49 @@
     "exits": {
       "west": "ABANDONED_OUTPOST"
     },
-    "items": {}
+    "items": {
+      "pretty bent tin can": {
+        "description": "A standard bent tin can that has rusted a pretty purple color.",
+        "name": "pretty bent tin can"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
+      }
+    }
   },
   "SCORCHED_FARM": {
     "description": "You arrive at a collection of ruined farm buildings. The ground is charred and black. A two-headed cow lies dead in a field. A dirt track leads west, and another path leads east toward a river. You notice a hidden trapdoor on the floor leading down.",
-    "enemies": {},
+    "enemies": {
+      "ghoul": {
+        "damage": 4,
+        "description": "A feral ghoul stalking through the charred ruins.",
+        "health": 20,
+        "loot": {
+          "description": "A large, crusty flake of ghoul skin.",
+          "name": "scab"
+        },
+        "name": "feral ghoul",
+        "xpValue": 20
+      }
+    },
     "exits": {
       "down": "RAILROAD_HIDEOUT",
       "east": "RIVER_BANK",
       "west": "WASTELAND_1"
     },
     "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      },
       "mutated fruit": {
         "description": "A strange, glowing fruit. It looks... vaguely edible.",
         "name": "mutated fruit"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
       }
     }
   },
@@ -167,12 +299,12 @@
         "damage": 3,
         "description": "A disgusting, oversized roach the size of a dog.",
         "health": 15,
-        "xpValue": 10,
         "loot": {
           "description": "Slightly irradiated roach meat. Yuck.",
           "name": "roach meat"
         },
-        "name": "radroach"
+        "name": "radroach",
+        "xpValue": 10
       }
     },
     "exits": {
@@ -183,6 +315,23 @@
       "stimpak": {
         "description": "A syringe full of a miraculous healing chemical. Using it should restore some health.",
         "name": "stimpak"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
+      }
+    }
+  },
+  "UNDER_BRIDGE": {
+    "description": "You've descended into the dark, damp area beneath the bridge. The smell of river sludge is overwhelming. A man named Crust, covered in rags and smelling even worse than the river, sits by a small, flickering fire. The muddy path leads back up.",
+    "enemies": {},
+    "exits": {
+      "up": "RIVER_BANK"
+    },
+    "items": {
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
       }
     }
   },
@@ -192,7 +341,20 @@
     "exits": {
       "north": "WASTELAND_1"
     },
-    "items": {}
+    "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
+      },
+      "stuffed bear": {
+        "description": "A ragged stuffed bear. Its fur is matted and it smells of old Vault air.",
+        "name": "stuffed bear"
+      }
+    }
   },
   "WASTELAND_1": {
     "description": "You are in a barren stretch of wasteland. The ground is cracked and dry. To the south is the Vault entrance. To the north, you see a dilapidated shed. A dirt track leads east, and a trail of debris leads west. A desiccated corpse lies near a rock.",
@@ -204,9 +366,17 @@
       "west": "CRASHED_VERTIBIRD"
     },
     "items": {
+      "bent tin can": {
+        "description": "A simple, rusted, and very bent tin can.",
+        "name": "bent tin can"
+      },
       "office key": {
         "description": "A tarnished key with an old plastic tag. It might open something nearby.",
         "name": "office key"
+      },
+      "scab": {
+        "description": "A large, crusty flake.",
+        "name": "scab"
       }
     }
   }

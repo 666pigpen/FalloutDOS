@@ -153,7 +153,28 @@ void Game::processInput() {
                 std::cout << "The guard steps into your path, blocking the way with his shotgun. \"The Lady Luck is for high rollers only, smoothskin. You need at least 20 caps to get in. Scram.\"" << std::endl;
             }
         } else if (currentRoom.exits.count(command.noun)) {
-            player.currentRoomId = currentRoom.exits[command.noun];
+            std::string nextRoomId = currentRoom.exits[command.noun];
+            if (nextRoomId == "LILLYPAD_ISLAND") {
+                bool hasStuffie = false;
+                for (auto const& [name, item] : player.inventory) {
+                    if (name.find("stuffed") != std::string::npos) {
+                        hasStuffie = true;
+                        break;
+                    }
+                }
+                
+                if (!hasStuffie) {
+                    std::cout << "You dive into the irradiated water and swim toward the island. As you approach the shore, the beautiful voice turns into a terrifying screech. Lillypad lunges from the reeds, her webbed hands closing around your throat. \"NO STUFFIE? NO BREATHIE!\" she gurgles, dragging you down into the glowing depths." << std::endl;
+                    player.health = 0;
+                    isRunning = false;
+                    return;
+                } else {
+                    std::cout << "As you swim closer, Lillypad watches you with wide, unblinking eyes. She sees the stuffed animal tucked into your pack and lets out a soft, trilling coo, beckoning you ashore." << std::endl;
+                    player.currentRoomId = nextRoomId;
+                }
+            } else {
+                player.currentRoomId = nextRoomId;
+            }
         } else {
             std::cout << "You can't go that way." << std::endl;
         }
@@ -299,6 +320,7 @@ void Game::processInput() {
             if (!command.indirect_noun.empty() && command.preposition == "with") {
                 if (player.inventory.count(command.indirect_noun)) {
                     if (command.indirect_noun == "plasma rifle") { playerDamage += 20; weaponUsed = command.indirect_noun; }
+                    else if (command.indirect_noun == "fat man") { playerDamage += 100; weaponUsed = command.indirect_noun; }
                     else if (command.indirect_noun == "laser pistol") { playerDamage += 10; weaponUsed = command.indirect_noun; }
                     else if (command.indirect_noun == "spiked pipe") { playerDamage += 15; weaponUsed = command.indirect_noun; }
                     else if (command.indirect_noun == "rusty knife") { playerDamage += 5; weaponUsed = command.indirect_noun; }
@@ -314,7 +336,8 @@ void Game::processInput() {
                 }
             } else {
                 // Auto-equip best weapon if not specified
-                if (player.inventory.count("plasma rifle")) { playerDamage += 20; weaponUsed = "plasma rifle"; }
+                if (player.inventory.count("fat man")) { playerDamage += 100; weaponUsed = "fat man"; }
+                else if (player.inventory.count("plasma rifle")) { playerDamage += 20; weaponUsed = "plasma rifle"; }
                 else if (player.inventory.count("laser pistol")) { playerDamage += 10; weaponUsed = "laser pistol"; }
                 else if (player.inventory.count("spiked pipe")) { playerDamage += 15; weaponUsed = "spiked pipe"; }
                 else if (player.inventory.count("rusty knife")) { playerDamage += 5; weaponUsed = "rusty knife"; }
@@ -428,8 +451,110 @@ void Game::processInput() {
             } else {
                 std::cout << "\"Please hurry. The Enclave guard at their camp has the decryption key we need.\"" << std::endl;
             }
+        } else if (player.currentRoomId == "ABANDONED_MANSION" && command.noun == "rosie") {
+            int prettyCanCount = 0;
+            for (auto const& [name, item] : player.inventory) {
+                if (name == "pretty bent tin can") prettyCanCount++;
+            }
+
+            if (!flags["rosieMissionAssigned"]) {
+                std::cout << "Rosie looks up from her mountain of cans, her eyes surprisingly sharp within her weathered, once-beautiful face. She adjusts herself in her rattletrap wheelchair with a groan. \"Oh! A visitor! Mind the cans, dear, they're quite precious. I'm always looking to expand my collection.\"" << std::endl;
+                std::cout << "\"Actually... I'm looking for something specific. I've heard rumors of 'pretty bent tin cans' that have rusted a beautiful purple color. If you could find 3 of them for me, I'll give you something truly special I found in the attic. A 'Fat Man' I think the pre-war folks called it. It's quite heavy, but I'm sure it packs a punch!\"" << std::endl;
+                flags["rosieMissionAssigned"] = true;
+            } else if (flags["rosieMissionComplete"]) {
+                std::cout << "Rosie hums a raspy, cheerful tune as she polishes one of her purple cans, her hands trembling slightly. \"Thank you again for the additions to my collection, dear!\"" << std::endl;
+            } else if (prettyCanCount >= 3) {
+                std::cout << "Rosie's eyes widen, a ghost of her former radiance appearing for a moment. \"Oh my! They're even more beautiful than I imagined! Simply marvelous.\"" << std::endl;
+                std::cout << "She takes three of the cans, her wheelchair rattling as she maneuvers to the back of the mansion, returning moments later with a massive, bulky weapon. \"Here you go, dear. A promise is a promise. Do be careful with it, it looks... explosive.\"" << std::endl;
+                
+                // Remove 3 cans
+                int removed = 0;
+                auto it = player.inventory.begin();
+                while (it != player.inventory.end() && removed < 3) {
+                    if (it->first == "pretty bent tin can") {
+                        it = player.inventory.erase(it);
+                        removed++;
+                    } else {
+                        ++it;
+                    }
+                }
+                
+                player.inventory["fat man"] = Item("fat man", "A pre-war tactical nuclear catapult. Extremely heavy and devastatingly powerful.");
+                flags["rosieMissionComplete"] = true;
+                gainXP(150);
+            } else {
+                std::cout << "\"Any luck finding those pretty purple cans, dear? I only need 3 of them!\" Rosie asks hopefully." << std::endl;
+            }
+        } else if (player.currentRoomId == "UNDER_BRIDGE" && command.noun == "crust") {
+            std::cout << "Crust looks up, a piece of something unidentifiable stuck in his beard. \"Scabs... you got scabs? I need 'em. I'll pay you a cap for every one you find. Don't ask what they're for. Just bring 'em here.\"" << std::endl;
+        } else if (player.currentRoomId == "LILLYPAD_ISLAND" && command.noun == "lillypad") {
+            std::cout << "Lillypad tilts her head, her skin a pale, translucent green. \"Pretty... so soft. You brought a stuffie? I love them. They don't scream. They don't rot. They just stay... soft. Give me your stuffies, and I'll give you my pretty shiny caps.\"" << std::endl;
         } else {
             std::cout << "There's no one here by that name to talk to." << std::endl;
+        }
+    } else if (command.verb == "sell") {
+        if (player.currentRoomId == "ABANDONED_MANSION") {
+            if (player.inventory.count(command.noun)) {
+                Item item = player.inventory[command.noun];
+                int price = 10; // Base price
+                if (command.noun == "pretty bent tin can") price = 50;
+                else if (command.noun == "bent tin can") price = 25;
+                else if (command.noun == "fat man") price = 250;
+                else if (command.noun == "plasma rifle") price = 250;
+                else if (command.noun == "laser pistol") price = 150;
+                else if (command.noun == "fusion core") price = 100;
+                else if (command.noun == "power armor helmet") price = 200;
+                else if (command.noun == "stimpak") price = 20;
+                else if (command.noun == "nuka-cola") price = 15;
+                else if (command.noun == "iguana-on-a-stick") price = 25;
+                else if (command.noun == "wasteland stew") price = 40;
+                else if (command.noun == "spiked pipe") price = 60;
+                else if (command.noun == "rusty knife") price = 15;
+                else if (command.noun == "pipe") price = 10;
+                else if (command.noun == "wrench") price = 15;
+                else if (command.noun == "office key") price = 50;
+                else if (command.noun == "decryption key") price = 100;
+                else if (command.noun == "flight recorder") price = 150;
+                else if (command.noun == "stealth boy") price = 150;
+                else if (command.noun == "mutated fruit") price = 10;
+                else if (command.noun == "roach meat") price = 10;
+
+                player.caps += price;
+                player.inventory.erase(command.noun);
+                std::cout << "Rosie's eyes light up as she takes the " << item.name << ". \"Oh, this is marvelous! Here are " << price << " caps, dear.\"" << std::endl;
+                if (command.noun == "bent tin can") {
+                    std::cout << "Rosie hums happily and adds the can to one of her towering stacks." << std::endl;
+                }
+            } else {
+                std::cout << "\"You don't seem to have a '" << command.noun << "' to sell me, dear,\" Rosie says gently." << std::endl;
+            }
+        } else if (player.currentRoomId == "LILLYPAD_ISLAND") {
+            if (command.noun.find("stuffed") != std::string::npos) {
+                if (player.inventory.count(command.noun)) {
+                    Item item = player.inventory[command.noun];
+                    player.inventory.erase(command.noun);
+                    player.caps += 50;
+                    std::cout << "Lillypad lets out a trilling coo as she takes the " << item.name << ", hugging it tightly against her wet chest. \"So soft... thank you, pretty thing. Here, take the shiny.\"" << std::endl;
+                } else {
+                    std::cout << "Lillypad's face darkens. \"You lie? You have no " << command.noun << " for Lillypad?\"" << std::endl;
+                }
+            } else {
+                std::cout << "Lillypad ignores your junk. \"Not soft. Not a stuffie. I only want stuffies!\"" << std::endl;
+            }
+        } else if (player.currentRoomId == "UNDER_BRIDGE") {
+            if (command.noun == "scab") {
+                if (player.inventory.count("scab")) {
+                    player.inventory.erase("scab");
+                    player.caps += 1;
+                    std::cout << "Crust snatches the scab from your hand and stuffs it into a dirty pouch. \"Good... good. Here's your cap.\"" << std::endl;
+                } else {
+                    std::cout << "\"You ain't got no scabs, smoothskin! Don't waste my time!\" Crust snarls." << std::endl;
+                }
+            } else {
+                std::cout << "\"I only buy scabs. Keep your other junk,\" Crust grunts." << std::endl;
+            }
+        } else {
+            std::cout << "There's no one here to sell anything to." << std::endl;
         }
     } else if (command.verb == "buy") {
         if (player.currentRoomId == "CASINO_BAR") {

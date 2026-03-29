@@ -32,5 +32,5 @@ A C++17 text-based adventure game set in a post-apocalyptic wasteland, inspired 
 - [x] Implement a system for faction reputation or conflicting choices.
 - [x] Add an armor system with equip/unequip mechanics.
 - [x] Add a Save/Load system using a JSON file.
-- [ ] Implement a Leveling/XP system with Perks.
-- [ ] Implement a Crafting system for combining items.
+- [x] Implement a Leveling/XP system with Perks.
+- [x] Implement a Crafting system for combining items.
