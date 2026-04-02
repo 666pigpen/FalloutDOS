@@ -1,4 +1,5 @@
 # Build artifacts
+*.zip
 falloutdos
 falloutdos_new
 falloutdos.exe
