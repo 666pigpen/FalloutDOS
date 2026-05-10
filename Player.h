@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 #include <vector>
 #include "Item.h"
 
@@ -21,6 +22,7 @@ public:
     int level;
     std::vector<std::string> perks;
     bool hasMission;
+    std::set<std::string> visitedRooms;
 };
 
 #endif // PLAYER_H

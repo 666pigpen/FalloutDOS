@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Pipboy.h"
 #include <iostream>
 #include <sstream>
 #include <algorithm>
@@ -45,7 +46,7 @@ void from_json(const json& j, Room& r) {
 }
 
 void to_json(json& j, const Player& p) {
-    j = json{{"currentRoomId", p.currentRoomId}, {"inventory", p.inventory}, {"special", p.special}, {"equippedArmor", p.equippedArmor}, {"health", p.health}, {"maxHealth", p.maxHealth}, {"caps", p.caps}, {"xp", p.xp}, {"level", p.level}, {"perks", p.perks}, {"hasMission", p.hasMission}};
+    j = json{{"currentRoomId", p.currentRoomId}, {"inventory", p.inventory}, {"special", p.special}, {"equippedArmor", p.equippedArmor}, {"health", p.health}, {"maxHealth", p.maxHealth}, {"caps", p.caps}, {"xp", p.xp}, {"level", p.level}, {"perks", p.perks}, {"hasMission", p.hasMission}, {"visitedRooms", p.visitedRooms}};
 }
 
 void from_json(const json& j, Player& p) {
@@ -60,6 +61,7 @@ void from_json(const json& j, Player& p) {
     if (j.contains("level")) j.at("level").get_to(p.level); else p.level = 1;
     if (j.contains("perks")) j.at("perks").get_to(p.perks); else p.perks = {};
     j.at("hasMission").get_to(p.hasMission);
+    if (j.contains("visitedRooms")) j.at("visitedRooms").get_to(p.visitedRooms);
 }
 
 Game::Game() : isRunning(true) {
@@ -70,8 +72,9 @@ Game::Game() : isRunning(true) {
 void Game::run() {
     std::cout << "Fallout DOS Adventure" << std::endl;
     std::cout << "=====================" << std::endl;
-    std::cout << "Type 'go <direction>', 'look', 'look <item>', 'take <item>', 'drop <item>', 'inventory', 'character', 'use <item>', 'play <game>', 'talk <npc>', 'buy <item>', or 'quit'." << std::endl;
-    std::cout << "Other commands may be available depending on the situation (e.g., 'open crate')." << std::endl << std::endl;
+    std::cout << "Type 'go <direction>', 'look', 'take <item>', 'drop <item>', 'inventory', 'use <item>'," << std::endl;
+    std::cout << "'attack <enemy>', 'talk <npc>', 'buy <item>', 'craft <item>', 'save', 'load', or 'quit'." << std::endl;
+    std::cout << "Type 'p' or 'pipboy' to open your Pip-Boy (stats, inventory, map)." << std::endl << std::endl;
 
 
     while (isRunning) {
@@ -98,6 +101,7 @@ void Game::setupWorld() {
 }
 
 void Game::render() {
+    player.visitedRooms.insert(player.currentRoomId);
     Room& currentRoom = world[player.currentRoomId];
     std::cout << currentRoom.description << std::endl;
     
@@ -134,6 +138,12 @@ void Game::processInput() {
 
     if (command.verb == "quit") {
         isRunning = false;
+    } else if (command.verb == "pipboy" || command.verb == "p") {
+        Pipboy pb;
+        pb.open(player, world, flags);
+        // Re-render room description after closing Pip-Boy
+        render();
+        return;
     } else if (command.verb == "save") {
         saveGame("savegame.json");
     } else if (command.verb == "load") {

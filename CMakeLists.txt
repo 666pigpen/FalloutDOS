@@ -11,6 +11,7 @@ set(SOURCES
     Player.cpp
     Room.cpp
     Item.cpp
+    Pipboy.cpp
 )
 
 # Define the header files
@@ -20,6 +21,7 @@ set(HEADERS
     Room.h
     Item.h
     Command.h
+    Pipboy.h
 )
 
 # Create the executable
